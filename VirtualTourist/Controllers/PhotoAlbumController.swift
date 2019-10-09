@@ -1,5 +1,5 @@
 //
-//  AppDelegate.swift
+//  PhotoAlbumController.swift
 //  VirtualTourist
 //
 //  Created by Peter Burgner on 10/8/19.
@@ -8,10 +8,6 @@
 
 import UIKit
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-    var window: UIWindow?
-
+class PhotoAlbumController: UIViewController {
+    
 }
-
