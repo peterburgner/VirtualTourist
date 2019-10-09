@@ -82,8 +82,8 @@
 		04B6ED17234D9FC2002BA93E /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				04B6ED0C234D9E24002BA93E /* LaunchScreen.storyboard */,
 				04B6ED07234D9E1F002BA93E /* Main.storyboard */,
+				04B6ED0C234D9E24002BA93E /* LaunchScreen.storyboard */,
 				04B6ED0A234D9E24002BA93E /* Assets.xcassets */,
 			);
 			path = Assets;
