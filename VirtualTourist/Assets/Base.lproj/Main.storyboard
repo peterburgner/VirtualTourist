@@ -45,7 +45,11 @@
                         <viewLayoutGuide key="safeArea" id="GHd-OZ-JIu"/>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="Ecn-Ra-kpa">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="9dM-lR-Naz"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="9dM-lR-Naz">
+                            <connections>
+                                <action selector="edit:" destination="QLr-jE-xhL" id="Dv9-9M-7Es"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="Zkr-8L-IVh" id="rAn-rQ-Is2"/>

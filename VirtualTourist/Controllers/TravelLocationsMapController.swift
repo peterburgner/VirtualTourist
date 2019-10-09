@@ -26,4 +26,7 @@ class TravelLocationsMapController: UIViewController {
 //        let region = MKCoordinateRegion(center: map.centerCoordinate, latitudinalMeters: 100000, longitudinalMeters: 100000)
 //        map.setRegion(region, animated: true)
     }
+    
+    @IBAction func edit(_ sender: Any) {
+    }
 }
