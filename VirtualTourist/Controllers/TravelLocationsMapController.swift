@@ -29,12 +29,20 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
             let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
             addAnnotation(location: locationOnMap)
         }
+        if sender.state == .ended {
+            showPhotos()
+        }
     }
 
     func addAnnotation(location: CLLocationCoordinate2D){
             let annotation = MKPointAnnotation()
             annotation.coordinate = location
             self.mapView.addAnnotation(annotation)
+    }
+    
+    func showPhotos() {
+        let vc = self.storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
+        self.navigationController!.pushViewController(vc, animated: true)
     }
 
     func prepareUI() {
@@ -80,14 +88,14 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         return pinView
     }
 
-    // This delegate method is implemented to respond to taps. It opens the system browser
-    // to the URL specified in the annotationViews subtitle property.
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.shared
-            if let toOpen = view.annotation?.subtitle! {
-                app.open(URL(string:toOpen)!, options: [:], completionHandler: nil)
-            }
-        }
-    }
+//    // This delegate method is implemented to respond to taps. It opens the system browser
+//    // to the URL specified in the annotationViews subtitle property.
+//    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+//        if control == view.rightCalloutAccessoryView {
+//            let app = UIApplication.shared
+//            if let toOpen = view.annotation?.subtitle! {
+//                app.open(URL(string:toOpen)!, options: [:], completionHandler: nil)
+//            }
+//        }
+//    }
 }

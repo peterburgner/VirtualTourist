@@ -57,7 +57,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="Zkr-8L-IVh" id="rAn-rQ-Is2"/>
-                        <segue destination="DaD-Tx-XEE" kind="show" identifier="showPhotos" id="zvN-PR-YMU"/>
+                        <segue destination="DaD-Tx-XEE" kind="show" identifier="showPhotoAlbum" id="zvN-PR-YMU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oT1-0M-dkI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -67,7 +67,7 @@
         <!--Photos-->
         <scene sceneID="6ts-Nv-VaU">
             <objects>
-                <viewController id="DaD-Tx-XEE" customClass="PhotoAlbumController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoAlbumController" id="DaD-Tx-XEE" customClass="PhotoAlbumController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SIo-Ng-Aqn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -110,6 +110,10 @@
                         <viewLayoutGuide key="safeArea" id="Vjk-S7-BMg"/>
                     </view>
                     <navigationItem key="navigationItem" title="Photos" id="zfi-Z5-kLc"/>
+                    <connections>
+                        <outlet property="collectionView" destination="wbx-oU-b5w" id="YSy-NZ-8CF"/>
+                        <outlet property="mapView" destination="iqw-7E-3P0" id="waO-Ed-NAO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CRx-8U-WOT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

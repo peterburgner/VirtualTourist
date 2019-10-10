@@ -7,7 +7,10 @@
 //
 
 import UIKit
+import MapKit
 
 class PhotoAlbumController: UIViewController {
     
+    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var collectionView: UICollectionView!
 }
