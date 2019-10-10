@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -23,7 +24,7 @@
             </objects>
             <point key="canvasLocation" x="-221" y="111"/>
         </scene>
-        <!--Virtual Tourist-->
+        <!--Pick Location-->
         <scene sceneID="FzM-Fn-z5o">
             <objects>
                 <viewController id="QLr-jE-xhL" customClass="TravelLocationsMapController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
@@ -47,7 +48,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="GHd-OZ-JIu"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Virtual Tourist" id="Ecn-Ra-kpa">
+                    <navigationItem key="navigationItem" title="Pick Location" id="Ecn-Ra-kpa">
                         <barButtonItem key="rightBarButtonItem" systemItem="edit" id="9dM-lR-Naz">
                             <connections>
                                 <action selector="edit:" destination="QLr-jE-xhL" id="Dv9-9M-7Es"/>
@@ -56,11 +57,63 @@
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="Zkr-8L-IVh" id="rAn-rQ-Is2"/>
+                        <segue destination="DaD-Tx-XEE" kind="show" identifier="showPhotos" id="zvN-PR-YMU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oT1-0M-dkI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="497.10144927536237" y="110.49107142857143"/>
+            <point key="canvasLocation" x="504" y="110"/>
+        </scene>
+        <!--Photos-->
+        <scene sceneID="6ts-Nv-VaU">
+            <objects>
+                <viewController id="DaD-Tx-XEE" customClass="PhotoAlbumController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SIo-Ng-Aqn">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="iqw-7E-3P0">
+                                <rect key="frame" x="0.0" y="88" width="414" height="218"/>
+                            </mapView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="wbx-oU-b5w">
+                                <rect key="frame" x="0.0" y="314" width="414" height="548"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="N88-R9-8Ea">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Y2m-yI-K89">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Ztk-Fi-eu3">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="leading" secondItem="Vjk-S7-BMg" secondAttribute="leading" id="8g2-b6-7Ui"/>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="top" secondItem="iqw-7E-3P0" secondAttribute="bottom" constant="8" id="Bsf-Gu-a6j"/>
+                            <constraint firstItem="iqw-7E-3P0" firstAttribute="top" secondItem="Vjk-S7-BMg" secondAttribute="top" id="RMl-xJ-dYd"/>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="bottom" secondItem="Vjk-S7-BMg" secondAttribute="bottom" id="Rlz-6E-uaF"/>
+                            <constraint firstItem="iqw-7E-3P0" firstAttribute="leading" secondItem="Vjk-S7-BMg" secondAttribute="leading" id="l7C-qv-UtN"/>
+                            <constraint firstItem="iqw-7E-3P0" firstAttribute="trailing" secondItem="Vjk-S7-BMg" secondAttribute="trailing" id="sIb-Ev-8OC"/>
+                            <constraint firstItem="Vjk-S7-BMg" firstAttribute="bottom" secondItem="iqw-7E-3P0" secondAttribute="bottom" constant="556" id="sm9-lY-nk4"/>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="trailing" secondItem="Vjk-S7-BMg" secondAttribute="trailing" id="v40-Yf-fNJ"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Vjk-S7-BMg"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Photos" id="zfi-Z5-kLc"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CRx-8U-WOT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1211.5942028985507" y="109.82142857142857"/>
         </scene>
     </scenes>
 </document>
