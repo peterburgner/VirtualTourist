@@ -13,6 +13,7 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
+    let annotation = MKPointAnnotation()
     
     // MARK: -View Functions
     override func viewDidLoad() {
@@ -35,14 +36,15 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     }
 
     func addAnnotation(location: CLLocationCoordinate2D){
-            let annotation = MKPointAnnotation()
             annotation.coordinate = location
-            self.mapView.addAnnotation(annotation)
+            mapView.addAnnotation(annotation)
     }
     
     func showPhotos() {
-        let vc = self.storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
-        self.navigationController!.pushViewController(vc, animated: true)
+        let vc = storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
+        vc.annotation = annotation
+        print("Annotation set to: \(vc.annotation)")
+        navigationController!.pushViewController(vc, animated: true)
     }
 
     func prepareUI() {
