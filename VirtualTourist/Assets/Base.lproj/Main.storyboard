@@ -76,7 +76,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="218"/>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="wbx-oU-b5w">
-                                <rect key="frame" x="0.0" y="314" width="414" height="498"/>
+                                <rect key="frame" x="0.0" y="314" width="414" height="504"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="N88-R9-8Ea">
                                     <size key="itemSize" width="50" height="50"/>
@@ -96,12 +96,10 @@
                                 </cells>
                             </collectionView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7xy-da-s9t">
-                                <rect key="frame" x="0.0" y="820" width="414" height="42"/>
+                                <rect key="frame" x="0.0" y="826" width="414" height="36"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="New Collection">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="New Collection"/>
                                 <connections>
                                     <action selector="createNewCollection:" destination="DaD-Tx-XEE" eventType="touchUpInside" id="6hh-5Z-maM"/>
                                 </connections>
