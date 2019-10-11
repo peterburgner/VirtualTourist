@@ -23,10 +23,13 @@ class FlickrClient {
         static let format = "&format=json&nojsoncallback=1"
         
         case search(String, String)
+        case photo(Int, Int, String, String)
         
         var stringValue: String {
             switch self {
             case .search(let lat, let long): return Endpoints.base + "?method=flickr.photos.search" + Endpoints.apiKey + "&lat=" + lat + "&long=" + long + Endpoints.format
+            case .photo(let farmID, let serverID, let photoID, let photoSecret): return "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(photoSecret).jpg"
+                // example: "https://farm8.staticflickr.com/7409/9256183076_faf2883a07.jpg"
             }
         }
         
