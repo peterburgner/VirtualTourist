@@ -14,6 +14,9 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var newCollectionButton: UIButton!
+    var downloadedImageCounter = 0
+    var numberImages = 0
     
     var annotation:MKAnnotation!
     
@@ -24,6 +27,9 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
     }
     
     func prepareUI() {
+        downloadedImageCounter = 0
+        numberImages = 0
+        newCollectionButton.isEnabled = false
         mapView.addAnnotation(annotation)
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
@@ -34,14 +40,28 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
     func handlePhotosSearchResponse(photosSearchResponse: PhotosSearchResponse?, error: Error?) {
         print("photos: \(photosSearchResponse)")
         print("error \(error)")
-        for photo in (photosSearchResponse?.photos.photo)! {
-            FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(image:))
+        if photosSearchResponse != nil {
+            numberImages = photosSearchResponse?.photos.photo.count ?? 0
+            for photo in (photosSearchResponse?.photos.photo)! {
+                FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(image:))
+            }
+            
         }
     }
     
     func handleDownloadPhotoResponse(image: UIImage?) {
+        downloadedImageCounter += 1
         DispatchQueue.main.async {
             self.imageView.image = image
+        }
+        manageNewCollectionButtonState()
+    }
+    
+    func manageNewCollectionButtonState() {
+        if downloadedImageCounter == numberImages {
+            DispatchQueue.main.async {
+                self.newCollectionButton.isEnabled = true
+            }
         }
     }
     

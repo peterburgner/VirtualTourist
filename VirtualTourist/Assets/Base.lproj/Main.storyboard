@@ -107,6 +107,7 @@
                     <connections>
                         <outlet property="imageView" destination="D5C-3o-iUp" id="5Jb-BQ-7ur"/>
                         <outlet property="mapView" destination="iqw-7E-3P0" id="waO-Ed-NAO"/>
+                        <outlet property="newCollectionButton" destination="7xy-da-s9t" id="AZc-yj-EHo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CRx-8U-WOT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
