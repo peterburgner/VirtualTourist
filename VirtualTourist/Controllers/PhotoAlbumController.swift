@@ -13,7 +13,8 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var imageView: UIImageView!
+    
     var annotation:MKAnnotation!
     
     override func viewDidLoad() {
@@ -33,6 +34,15 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
     func handlePhotosSearchResponse(photosSearchResponse: PhotosSearchResponse?, error: Error?) {
         print("photos: \(photosSearchResponse)")
         print("error \(error)")
+        for photo in (photosSearchResponse?.photos.photo)! {
+            FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(image:))
+        }
+    }
+    
+    func handleDownloadPhotoResponse(image: UIImage?) {
+        DispatchQueue.main.async {
+            self.imageView.image = image
+        }
     }
     
     // MARK: - MapViewDelegate

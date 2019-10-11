@@ -23,7 +23,7 @@ class FlickrClient {
         static let format = "&format=json&nojsoncallback=1"
         
         case search(String, String)
-        case photo(Int, Int, String, String)
+        case photo(Int, String, String, String)
         
         var stringValue: String {
             switch self {
@@ -83,4 +83,34 @@ class FlickrClient {
         task.resume()
     }
     
+    class func downloadPhoto(farmID: Int, serverID: String, photoID: String, photoSecret: String, completion: @escaping (UIImage?) -> Void) {
+        let request = URLRequest(url: Endpoints.photo(farmID, serverID, photoID, photoSecret).url)
+        print("Image URL: \(request)")
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            
+            if error != nil {
+                completion (nil)
+                return
+            }
+            
+            guard let httpStatusCode = (response as? HTTPURLResponse)?.statusCode else {
+                completion (nil)
+                return
+            }
+            
+            if httpStatusCode >= 200 && httpStatusCode < 300 {
+                
+                guard let data = data else {
+                    completion (nil)
+                    return
+                }
+                print("Image data downloaded")
+                let image = UIImage(data: data)
+                completion(image)
+                return
+            }
+        }
+        task.resume()
+    }
 }
