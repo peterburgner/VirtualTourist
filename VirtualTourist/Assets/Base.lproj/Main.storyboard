@@ -76,7 +76,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="218"/>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="wbx-oU-b5w">
-                                <rect key="frame" x="0.0" y="314" width="414" height="548"/>
+                                <rect key="frame" x="0.0" y="314" width="414" height="498"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="N88-R9-8Ea">
                                     <size key="itemSize" width="50" height="50"/>
@@ -95,17 +95,31 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7xy-da-s9t">
+                                <rect key="frame" x="0.0" y="820" width="414" height="42"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="New Collection">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="createNewCollection:" destination="DaD-Tx-XEE" eventType="touchUpInside" id="6hh-5Z-maM"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="wbx-oU-b5w" firstAttribute="leading" secondItem="Vjk-S7-BMg" secondAttribute="leading" id="8g2-b6-7Ui"/>
-                            <constraint firstItem="wbx-oU-b5w" firstAttribute="top" secondItem="iqw-7E-3P0" secondAttribute="bottom" constant="8" id="Bsf-Gu-a6j"/>
+                            <constraint firstItem="7xy-da-s9t" firstAttribute="trailing" secondItem="Vjk-S7-BMg" secondAttribute="trailing" id="BIB-J6-XX2"/>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="top" secondItem="iqw-7E-3P0" secondAttribute="bottom" constant="8" id="Fd7-4N-OUE"/>
+                            <constraint firstItem="7xy-da-s9t" firstAttribute="bottom" secondItem="Vjk-S7-BMg" secondAttribute="bottom" id="Nz6-PA-YgB"/>
                             <constraint firstItem="iqw-7E-3P0" firstAttribute="top" secondItem="Vjk-S7-BMg" secondAttribute="top" id="RMl-xJ-dYd"/>
-                            <constraint firstItem="wbx-oU-b5w" firstAttribute="bottom" secondItem="Vjk-S7-BMg" secondAttribute="bottom" id="Rlz-6E-uaF"/>
+                            <constraint firstItem="7xy-da-s9t" firstAttribute="top" secondItem="wbx-oU-b5w" secondAttribute="bottom" constant="8" id="d4b-mb-Y8d"/>
+                            <constraint firstItem="7xy-da-s9t" firstAttribute="leading" secondItem="Vjk-S7-BMg" secondAttribute="leading" id="jdg-MQ-sev"/>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="trailing" secondItem="Vjk-S7-BMg" secondAttribute="trailing" id="jil-4n-OdP"/>
                             <constraint firstItem="iqw-7E-3P0" firstAttribute="leading" secondItem="Vjk-S7-BMg" secondAttribute="leading" id="l7C-qv-UtN"/>
+                            <constraint firstItem="wbx-oU-b5w" firstAttribute="leading" secondItem="Vjk-S7-BMg" secondAttribute="leading" id="nPU-xs-Zl7"/>
                             <constraint firstItem="iqw-7E-3P0" firstAttribute="trailing" secondItem="Vjk-S7-BMg" secondAttribute="trailing" id="sIb-Ev-8OC"/>
                             <constraint firstItem="Vjk-S7-BMg" firstAttribute="bottom" secondItem="iqw-7E-3P0" secondAttribute="bottom" constant="556" id="sm9-lY-nk4"/>
-                            <constraint firstItem="wbx-oU-b5w" firstAttribute="trailing" secondItem="Vjk-S7-BMg" secondAttribute="trailing" id="v40-Yf-fNJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Vjk-S7-BMg"/>
                     </view>

@@ -47,4 +47,10 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
 
         return pinView
     }
+    
+    // MARK: -IBActions
+    @IBAction func createNewCollection(_ sender: Any) {
+        // TODO: filter out previously shown photos
+    }
+    
 }
