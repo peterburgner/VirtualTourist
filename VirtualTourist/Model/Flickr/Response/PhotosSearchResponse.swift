@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - FlickrSearch
-struct FlickrSearch: Codable {
+struct PhotosSearchResponse: Codable {
     let photos: Photos
     let stat: String
 }
@@ -17,15 +17,15 @@ struct FlickrSearch: Codable {
 // MARK: - Photos
 struct Photos: Codable {
     let page, pages: Int
-    let perpage: String
-    let total: Int
+    let perpage: Int
+    let total: String
     let photo: [Photo]
 }
 
 // MARK: - Photo
 struct Photo: Codable {
     let id, owner, secret: String
-    let server: Int
+    let server: String
     let farm: Int
     let title: String
     let ispublic, isfriend, isfamily: Int

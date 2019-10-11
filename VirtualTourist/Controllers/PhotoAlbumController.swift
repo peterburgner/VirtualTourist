@@ -19,6 +19,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         mapView.delegate = self
         prepareUI()
+        FlickrClient.searchPhotos(completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
     
     func prepareUI() {
@@ -26,6 +27,12 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
         mapView.region = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: 100000, longitudinalMeters: 100000)
+    }
+    
+    // MARK: -Completion Handlers
+    func handlePhotosSearchResponse(photosSearchResponse: PhotosSearchResponse?, error: Error?) {
+        print("photos: \(photosSearchResponse)")
+        print("error \(error)")
     }
     
     // MARK: - MapViewDelegate
