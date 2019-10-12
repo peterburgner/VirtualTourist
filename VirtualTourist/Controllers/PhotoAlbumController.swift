@@ -78,19 +78,26 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
         
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if downloadComplete {
-            return photosSearchResponse.photos.photo.count
-        } else {
+        guard let photosSearchResponse = photosSearchResponse else {
             return 0
         }
+        return photosSearchResponse.photos.photo.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+        
         cell.backgroundColor = .darkGray
+        cell.layer.borderColor = UIColor.black.cgColor
+        cell.layer.borderWidth = 1
+        cell.layer.cornerRadius = 4
+        cell.clipsToBounds = true
+        
         if downloadComplete == true {
             cell.imageView.image = downloadedPhotos[indexPath.row]
         }
+        
         return cell
     }
     
