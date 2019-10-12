@@ -9,19 +9,26 @@
 import UIKit
 import MapKit
 
-class PhotoAlbumController: UIViewController, MKMapViewDelegate {
+class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+   
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var newCollectionButton: UIButton!
     var downloadedImageCounter = 0
     var numberImages = 0
+    var downloadComplete = false
+    var photosSearchResponse:PhotosSearchResponse!
+    var downloadedPhotos = [UIImage]()
     
     var annotation:MKAnnotation!
     
     override func viewDidLoad() {
         mapView.delegate = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
         prepareUI()
         FlickrClient.searchPhotos(completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
@@ -41,19 +48,17 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
         print("photos: \(photosSearchResponse)")
         print("error \(error)")
         if photosSearchResponse != nil {
+            self.photosSearchResponse = photosSearchResponse
             numberImages = photosSearchResponse?.photos.photo.count ?? 0
             for photo in (photosSearchResponse?.photos.photo)! {
                 FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(image:))
             }
-            
         }
     }
     
     func handleDownloadPhotoResponse(image: UIImage?) {
         downloadedImageCounter += 1
-        DispatchQueue.main.async {
-            self.imageView.image = image
-        }
+        downloadedPhotos.append(image!)
         manageNewCollectionButtonState()
     }
     
@@ -61,13 +66,36 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate {
         if downloadedImageCounter == numberImages {
             DispatchQueue.main.async {
                 self.newCollectionButton.isEnabled = true
+                self.collectionView.reloadData()
             }
+            downloadComplete = true
         }
+    }
+    
+    // MARK: -Collection View Delegate
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Item selected")
+    }
+        
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if downloadComplete {
+            return photosSearchResponse.photos.photo.count
+        } else {
+            return 0
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let item = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+        if downloadComplete == true {
+            item.imageView.image = downloadedPhotos[indexPath.row]
+        }
+        return item
     }
     
     // MARK: - MapViewDelegate
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-
+        
         let reuseId = "pin"
 
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
