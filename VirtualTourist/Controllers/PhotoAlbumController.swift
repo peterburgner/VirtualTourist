@@ -24,7 +24,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var downloadedPhotos = [UIImage]()
     var numberImages = 0
     
-    let sectionInsets = UIEdgeInsets(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0)
+    let sectionInsets = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
     let photosPerRow: CGFloat = 3
     
     var annotation:MKAnnotation!
@@ -101,7 +101,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         cell.layer.borderColor = UIColor.black.cgColor
         cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 4
-        cell.clipsToBounds = true
+//        cell.clipsToBounds = true
         
         if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
@@ -144,7 +144,7 @@ extension PhotoAlbumController : UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let paddingSpace = sectionInsets.left * (photosPerRow + 1)
+        let paddingSpace = (sectionInsets.left + sectionInsets.right) * (photosPerRow)
         let availableWidth = view.frame.width - paddingSpace
         let widthPerPhoto = availableWidth / photosPerRow
         
