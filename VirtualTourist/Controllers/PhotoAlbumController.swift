@@ -22,7 +22,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
     let sectionInsets = UIEdgeInsets(top: 20.0 ,left: 20.0, bottom: 20.0, right: 20.0)
-    let itemsPerRow: CGFloat = 3
+    let photosPerRow: CGFloat = 3
     var annotation:MKAnnotation!
     
     override func viewDidLoad() {
@@ -127,11 +127,11 @@ extension PhotoAlbumController : UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let paddingSpace = sectionInsets.left * (photosPerRow + 1)
         let availableWidth = view.frame.width - paddingSpace
-        let widthPerItem = availableWidth / itemsPerRow
+        let widthPerPhoto = availableWidth / photosPerRow
         
-        return CGSize(width: widthPerItem, height: widthPerItem)
+        return CGSize(width: widthPerPhoto, height: widthPerPhoto)
     }
     
     func collectionView(_ collectionView: UICollectionView,
