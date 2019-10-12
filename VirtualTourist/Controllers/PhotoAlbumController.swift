@@ -9,9 +9,8 @@
 import UIKit
 import MapKit
 
-class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
    
-    
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -22,6 +21,8 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var downloadComplete = false
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
+    let sectionInsets = UIEdgeInsets(top: 20.0 ,left: 20.0, bottom: 20.0, right: 20.0)
+    let itemsPerRow: CGFloat = 3
     
     var annotation:MKAnnotation!
     
@@ -86,11 +87,12 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let item = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+        cell.backgroundColor = .darkGray
         if downloadComplete == true {
-            item.imageView.image = downloadedPhotos[indexPath.row]
+            cell.imageView.image = downloadedPhotos[indexPath.row]
         }
-        return item
+        return cell
     }
     
     // MARK: - MapViewDelegate
@@ -117,5 +119,31 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     @IBAction func createNewCollection(_ sender: Any) {
         // TODO: filter out previously shown photos
     }
+}
+
+// MARK: -Collection View Flow Layout Delegate
+extension PhotoAlbumController : UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let availableWidth = view.frame.width - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+        
+        return CGSize(width: widthPerItem, height: widthPerItem)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
 }
