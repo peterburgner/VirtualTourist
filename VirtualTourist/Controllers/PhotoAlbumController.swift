@@ -16,15 +16,20 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var newCollectionButton: UIButton!
+    
     var downloadedImageCounter = 0
-    var numberImages = 0
     var downloadComplete = false
+    
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
+    var numberImages = 0
+    
     let sectionInsets = UIEdgeInsets(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0)
     let photosPerRow: CGFloat = 3
+    
     var annotation:MKAnnotation!
     
+    // MARK: -View Functions
     override func viewDidLoad() {
         mapView.delegate = self
         collectionView.delegate = self
