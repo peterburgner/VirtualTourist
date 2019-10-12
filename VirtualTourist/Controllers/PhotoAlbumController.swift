@@ -82,15 +82,19 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
     
     // MARK: -Collection View Delegate
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Item selected")
-    }
         
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let photosSearchResponse = photosSearchResponse else {
+            collectionView.setBackgroundMessage("Downloading photos from Flickr")
             return 0
         }
-        return photosSearchResponse.photos.photo.count
+        if photosSearchResponse.photos.photo.count == 0 {
+            collectionView.setBackgroundMessage("No photos on Flickr for this location")
+            return 0
+        } else {
+            collectionView.backgroundView = nil
+            return photosSearchResponse.photos.photo.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -101,13 +105,17 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         cell.layer.borderColor = UIColor.black.cgColor
         cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 4
-//        cell.clipsToBounds = true
         
         if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
         }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Item selected")
+        // TODO: Add delete feature
     }
     
     // MARK: -IBActions
@@ -137,7 +145,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
 }
 
-// MARK: -Collection View Flow Layout Delegate
+// MARK: -Flow Layout Delegate
 extension PhotoAlbumController : UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
@@ -161,5 +169,25 @@ extension PhotoAlbumController : UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return sectionInsets.left
+    }
+}
+
+// MARK: -UICollectionView extension
+extension UICollectionView {
+
+    func setBackgroundMessage(_ message: String) {
+        let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.bounds.size.width, height: self.bounds.size.height))
+        messageLabel.text = message
+        messageLabel.textColor = .black
+        messageLabel.numberOfLines = 0;
+        messageLabel.textAlignment = .center;
+        messageLabel.font = UIFont(name: "Avenir-Light", size: 18)
+        messageLabel.sizeToFit()
+
+        self.backgroundView = messageLabel;
+    }
+
+    func restore() {
+        self.backgroundView = nil
     }
 }
