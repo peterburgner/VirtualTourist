@@ -38,9 +38,9 @@ class FlickrClient {
         }
     }
     
-    class func searchPhotos(completion: @escaping (PhotosSearchResponse?, Error?) -> Void ) {
+    class func searchPhotos(coordinate: CLLocationCoordinate2D, completion: @escaping (PhotosSearchResponse?, Error?) -> Void ) {
         print("Execute photo search")
-        let request = URLRequest(url: Endpoints.search("35.87724743459462", "-120.09037686776658").url)
+        let request = URLRequest(url: Endpoints.search(coordinate.latitude.description, coordinate.longitude.description).url)
         print(request)
         let session = URLSession.shared
         let task = session.dataTask(with: request) { data, response, error in

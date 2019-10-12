@@ -23,7 +23,6 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var downloadedPhotos = [UIImage]()
     let sectionInsets = UIEdgeInsets(top: 20.0 ,left: 20.0, bottom: 20.0, right: 20.0)
     let itemsPerRow: CGFloat = 3
-    
     var annotation:MKAnnotation!
     
     override func viewDidLoad() {
@@ -31,9 +30,9 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         collectionView.delegate = self
         collectionView.dataSource = self
         prepareUI()
-        FlickrClient.searchPhotos(completion: handlePhotosSearchResponse(photosSearchResponse:error:))
+        FlickrClient.searchPhotos(coordinate: annotation.coordinate, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
-    
+        
     func prepareUI() {
         downloadedImageCounter = 0
         numberImages = 0
