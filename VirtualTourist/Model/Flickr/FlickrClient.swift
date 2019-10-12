@@ -21,13 +21,14 @@ class FlickrClient {
         static let base = "https://www.flickr.com/services/rest/"
         static let apiKey = "&api_key=" + Auth.apiKey
         static let format = "&format=json&nojsoncallback=1"
+        static let perPage = "&per_page=30"
         
         case search(String, String)
         case photo(Int, String, String, String)
         
         var stringValue: String {
             switch self {
-            case .search(let lat, let long): return Endpoints.base + "?method=flickr.photos.search" + Endpoints.apiKey + "&lat=" + lat + "&lon=" + long + Endpoints.format
+            case .search(let lat, let long): return Endpoints.base + "?method=flickr.photos.search" + Endpoints.apiKey + "&lat=" + lat + "&lon=" + long + Endpoints.format + Endpoints.perPage
             case .photo(let farmID, let serverID, let photoID, let photoSecret): return "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(photoSecret).jpg"
                 // example: "https://farm8.staticflickr.com/7409/9256183076_faf2883a07.jpg"
             }
