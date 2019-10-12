@@ -21,7 +21,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var downloadComplete = false
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
-    let sectionInsets = UIEdgeInsets(top: 20.0 ,left: 20.0, bottom: 20.0, right: 20.0)
+    let sectionInsets = UIEdgeInsets(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0)
     let photosPerRow: CGFloat = 3
     var annotation:MKAnnotation!
     
@@ -48,6 +48,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         print("photos: \(photosSearchResponse)")
         print("error \(error)")
         if photosSearchResponse != nil {
+            collectionView.reloadData()
             self.photosSearchResponse = photosSearchResponse
             numberImages = photosSearchResponse?.photos.photo.count ?? 0
             for photo in (photosSearchResponse?.photos.photo)! {
@@ -59,10 +60,10 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     func handleDownloadPhotoResponse(image: UIImage?) {
         downloadedImageCounter += 1
         downloadedPhotos.append(image!)
-        manageNewCollectionButtonState()
+        updateUI()
     }
     
-    func manageNewCollectionButtonState() {
+    func updateUI() {
         if downloadedImageCounter == numberImages {
             DispatchQueue.main.async {
                 self.newCollectionButton.isEnabled = true
