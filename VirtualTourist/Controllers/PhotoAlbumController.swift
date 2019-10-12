@@ -72,9 +72,12 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         if downloadedImageCounter == numberImages {
             DispatchQueue.main.async {
                 self.newCollectionButton.isEnabled = true
-                self.collectionView.reloadData()
             }
             downloadComplete = true
+        }
+        let indexPath = IndexPath(item: downloadedImageCounter - 1, section: 0)
+        DispatchQueue.main.async {
+            self.collectionView.reloadItems(at: [indexPath])
         }
     }
     
@@ -100,7 +103,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         cell.layer.cornerRadius = 4
         cell.clipsToBounds = true
         
-        if downloadComplete == true {
+        if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
         }
         
