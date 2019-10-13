@@ -23,6 +23,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
     var numberImages = 0
+    var page = 0
     
     let sectionInsets = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
     let photosPerRow: CGFloat = 3
@@ -35,12 +36,13 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         collectionView.delegate = self
         collectionView.dataSource = self
         prepareUI()
-        FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: 0, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
+        FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
         
     func prepareUI() {
         downloadedImageCounter = 0
         numberImages = 0
+        downloadedPhotos = []
         newCollectionButton.isEnabled = false
         mapView.addAnnotation(annotation)
         mapView.isScrollEnabled = false
@@ -120,7 +122,9 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
     // MARK: -IBActions
     @IBAction func createNewCollection(_ sender: Any) {
-        // TODO: filter out previously shown photos
+        prepareUI()
+        page += 1
+        FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
     
     // MARK: - MapViewDelegate
