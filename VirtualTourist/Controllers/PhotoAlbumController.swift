@@ -35,19 +35,23 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         mapView.delegate = self
         collectionView.delegate = self
         collectionView.dataSource = self
-        prepareUI()
+        prepareMap()
+        resetUI()
         FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
-        
-    func prepareUI() {
-        downloadedImageCounter = 0
-        numberImages = 0
-        downloadedPhotos = []
-        newCollectionButton.isEnabled = false
+    
+    func prepareMap() {
         mapView.addAnnotation(annotation)
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
         mapView.region = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: 100000, longitudinalMeters: 100000)
+    }
+        
+    func resetUI() {
+        downloadedImageCounter = 0
+        numberImages = 0
+        downloadedPhotos = []
+        newCollectionButton.isEnabled = false
     }
     
     // MARK: -Completion Handlers
@@ -127,7 +131,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
     // MARK: -IBActions
     @IBAction func createNewCollection(_ sender: Any) {
-        prepareUI()
+        resetUI()
         page += 1
         FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
