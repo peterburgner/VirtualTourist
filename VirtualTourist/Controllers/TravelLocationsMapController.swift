@@ -24,17 +24,6 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         mapView.addGestureRecognizer(longTapGesture)
     }
 
-    @objc func longTap(sender: UIGestureRecognizer){
-        if sender.state == .began {
-            let locationInView = sender.location(in: mapView)
-            let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
-            addAnnotation(location: locationOnMap)
-        }
-        if sender.state == .ended {
-            showPhotos()
-        }
-    }
-
     func addAnnotation(location: CLLocationCoordinate2D){
             annotation.coordinate = location
             mapView.addAnnotation(annotation)
@@ -62,10 +51,16 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     @IBAction func edit(_ sender: Any) {
     }
     
-    func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-        print(mapView.region)
-        let regionData = ["latitude":mapView.region.center.latitude, "longitude":mapView.region.center.longitude, "latitudeDelta": mapView.region.span.latitudeDelta, "longitudeDelta":mapView.region.span.longitudeDelta]
-        UserDefaults.standard.setValue(regionData, forKey: "regionData")
+    // -MARK: -IBActions
+    @objc func longTap(sender: UIGestureRecognizer){
+        if sender.state == .began {
+            let locationInView = sender.location(in: mapView)
+            let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
+            addAnnotation(location: locationOnMap)
+        }
+        if sender.state == .ended {
+            showPhotos()
+        }
     }
     
     
@@ -86,18 +81,13 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         else {
             pinView!.annotation = annotation
         }
-
+        
         return pinView
     }
-
-//    // This delegate method is implemented to respond to taps. It opens the system browser
-//    // to the URL specified in the annotationViews subtitle property.
-//    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-//        if control == view.rightCalloutAccessoryView {
-//            let app = UIApplication.shared
-//            if let toOpen = view.annotation?.subtitle! {
-//                app.open(URL(string:toOpen)!, options: [:], completionHandler: nil)
-//            }
-//        }
-//    }
+    
+    func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
+        print(mapView.region)
+        let regionData = ["latitude":mapView.region.center.latitude, "longitude":mapView.region.center.longitude, "latitudeDelta": mapView.region.span.latitudeDelta, "longitudeDelta":mapView.region.span.longitudeDelta]
+        UserDefaults.standard.setValue(regionData, forKey: "regionData")
+    }
 }
