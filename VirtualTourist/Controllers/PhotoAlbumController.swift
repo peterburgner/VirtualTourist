@@ -16,6 +16,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var newCollectionButton: UIButton!
+    @IBOutlet weak var deleteButton: UIBarButtonItem!
     
     var downloadedImageCounter = 0
     var downloadComplete = false
@@ -24,6 +25,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var downloadedPhotos = [UIImage]()
     var numberImages = 0
     var page = 1
+    var photosToDelete: [Int] = []
     
     let sectionInsets = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
     let photosPerRow: CGFloat = 3
@@ -35,28 +37,41 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         mapView.delegate = self
         collectionView.delegate = self
         collectionView.dataSource = self
-        prepareMap()
+        prepareUI()
         resetUI()
         FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        prepareMap()
+        prepareUI()
         resetUI()
     }
     
-    func prepareMap() {
+    func prepareUI() {
         mapView.addAnnotation(annotation)
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
         mapView.region = MKCoordinateRegion(center: annotation.coordinate, latitudinalMeters: 100000, longitudinalMeters: 100000)
+        deleteButton.isEnabled = false
     }
         
     func resetUI() {
         downloadedImageCounter = 0
         numberImages = 0
+        photosToDelete = []
         downloadedPhotos = []
         newCollectionButton.isEnabled = false
+        deleteButton. = false
+    }
+    
+    // MARK: -IBActions
+    @IBAction func createNewCollection(_ sender: Any) {
+        resetUI()
+        page += 1
+        FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
+    }
+    
+    @IBAction func deletePhoto(_ sender: Any) {
     }
     
     // MARK: -Completion Handlers
@@ -130,15 +145,9 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Item selected")
-        // TODO: Add delete feature
-    }
-    
-    // MARK: -IBActions
-    @IBAction func createNewCollection(_ sender: Any) {
-        resetUI()
-        page += 1
-        FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
+        print("Photo \(indexPath.row) marked for deletion")
+        photosToDelete.append(indexPath.row)
+        deleteButton.isEnabled = true
     }
     
     // MARK: - MapViewDelegate

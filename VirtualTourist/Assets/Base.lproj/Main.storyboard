@@ -136,10 +136,17 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Vjk-S7-BMg"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Photos" id="zfi-Z5-kLc"/>
+                    <navigationItem key="navigationItem" title="Photos" id="zfi-Z5-kLc">
+                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="BGV-T6-PAt">
+                            <connections>
+                                <action selector="delete:" destination="DaD-Tx-XEE" id="MjX-YD-BQM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="rg7-p7-Obe" id="ZSd-HN-7HP"/>
                         <outlet property="collectionViewFlowLayout" destination="mbJ-qo-kHr" id="MUX-GE-yVt"/>
+                        <outlet property="deleteButton" destination="BGV-T6-PAt" id="XbW-D6-e0J"/>
                         <outlet property="mapView" destination="iqw-7E-3P0" id="waO-Ed-NAO"/>
                         <outlet property="newCollectionButton" destination="7xy-da-s9t" id="AZc-yj-EHo"/>
                     </connections>
