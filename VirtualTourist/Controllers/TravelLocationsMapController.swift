@@ -13,7 +13,7 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
-    let annotation = MKPointAnnotation()
+    var annotations = [MKPointAnnotation]()
     
     // MARK: -View Functions
     override func viewDidLoad() {
@@ -23,17 +23,12 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         mapView.addGestureRecognizer(longTapGesture)
     }
-
-    func addAnnotation(location: CLLocationCoordinate2D){
-            annotation.coordinate = location
-            mapView.addAnnotation(annotation)
-    }
     
-    func showPhotos() {
-        let vc = storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
-        vc.annotation = annotation
-        print("Annotation set to: \(vc.annotation)")
-        navigationController!.pushViewController(vc, animated: true)
+    func addAnnotation(location: CLLocationCoordinate2D){
+        let newAnnotation = MKPointAnnotation()
+        newAnnotation.coordinate = location
+        annotations.append(newAnnotation)
+        mapView.addAnnotations(annotations)
     }
 
     func prepareUI() {
@@ -58,14 +53,9 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
             let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
             addAnnotation(location: locationOnMap)
         }
-        if sender.state == .ended {
-            showPhotos()
-        }
     }
     
-    
     // MARK: - MKMapViewDelegate
-
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 
         let reuseId = "pin"
@@ -89,5 +79,16 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         print(mapView.region)
         let regionData = ["latitude":mapView.region.center.latitude, "longitude":mapView.region.center.longitude, "latitudeDelta": mapView.region.span.latitudeDelta, "longitudeDelta":mapView.region.span.longitudeDelta]
         UserDefaults.standard.setValue(regionData, forKey: "regionData")
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        showPhotos(annotation: view.annotation as! MKPointAnnotation)
+    }
+    
+    func showPhotos(annotation: MKAnnotation) {
+        let vc = storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
+        vc.annotation = annotation
+        print("Annotation set to: \(vc.annotation)")
+        navigationController!.pushViewController(vc, animated: true)
     }
 }
