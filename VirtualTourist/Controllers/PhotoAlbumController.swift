@@ -40,6 +40,11 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        prepareMap()
+        resetUI()
+    }
+    
     func prepareMap() {
         mapView.addAnnotation(annotation)
         mapView.isScrollEnabled = false
