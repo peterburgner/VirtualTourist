@@ -23,7 +23,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
     var numberImages = 0
-    var page = 0
+    var page = 1
     
     let sectionInsets = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
     let photosPerRow: CGFloat = 3
@@ -90,10 +90,15 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
             collectionView.setBackgroundMessage("Downloading photos from Flickr")
             return 0
         }
-        if photosSearchResponse.photos.photo.count == 0 {
+        if photosSearchResponse.photos.photo.count == 0 && page <= 1 {
             collectionView.setBackgroundMessage("No photos on Flickr for this location")
             return 0
-        } else {
+        }
+        if photosSearchResponse.photos.photo.count == 0 && page > 1 {
+            collectionView.setBackgroundMessage("No additional photos on Flickr")
+            return 0
+        }
+        else {
             collectionView.backgroundView = nil
             return photosSearchResponse.photos.photo.count
         }
