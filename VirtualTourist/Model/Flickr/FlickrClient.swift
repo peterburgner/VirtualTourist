@@ -23,12 +23,12 @@ class FlickrClient {
         static let format = "&format=json&nojsoncallback=1"
         static let perPage = "&per_page=30"
         
-        case search(String, String)
+        case search(String, String, Int)
         case photo(Int, String, String, String)
         
         var stringValue: String {
             switch self {
-            case .search(let lat, let long): return Endpoints.base + "?method=flickr.photos.search" + Endpoints.apiKey + "&lat=" + lat + "&lon=" + long + Endpoints.format + Endpoints.perPage
+            case .search(let lat, let long, let page): return Endpoints.base + "?method=flickr.photos.search" + Endpoints.apiKey + "&lat=" + lat + "&lon=" + long + Endpoints.format + Endpoints.perPage + "&page=\(page)"
             case .photo(let farmID, let serverID, let photoID, let photoSecret): return "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(photoSecret).jpg"
                 // example: "https://farm8.staticflickr.com/7409/9256183076_faf2883a07.jpg"
             }
@@ -39,9 +39,9 @@ class FlickrClient {
         }
     }
     
-    class func searchPhotos(coordinate: CLLocationCoordinate2D, completion: @escaping (PhotosSearchResponse?, Error?) -> Void ) {
+    class func searchPhotos(coordinate: CLLocationCoordinate2D, page: Int, completion: @escaping (PhotosSearchResponse?, Error?) -> Void ) {
         print("Execute photo search")
-        let request = URLRequest(url: Endpoints.search(coordinate.latitude.description, coordinate.longitude.description).url)
+        let request = URLRequest(url: Endpoints.search(coordinate.latitude.description, coordinate.longitude.description, page).url)
         print(request)
         let session = URLSession.shared
         let task = session.dataTask(with: request) { data, response, error in

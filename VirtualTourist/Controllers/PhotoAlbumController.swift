@@ -35,7 +35,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         collectionView.delegate = self
         collectionView.dataSource = self
         prepareUI()
-        FlickrClient.searchPhotos(coordinate: annotation.coordinate, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
+        FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: 0, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
         
     func prepareUI() {
