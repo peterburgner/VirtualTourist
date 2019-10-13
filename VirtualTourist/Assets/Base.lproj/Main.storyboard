@@ -139,7 +139,7 @@
                     <navigationItem key="navigationItem" title="Photos" id="zfi-Z5-kLc">
                         <barButtonItem key="rightBarButtonItem" systemItem="trash" id="BGV-T6-PAt">
                             <connections>
-                                <action selector="delete:" destination="DaD-Tx-XEE" id="MjX-YD-BQM"/>
+                                <action selector="deletePhotos:" destination="DaD-Tx-XEE" id="3bo-mL-IDl"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

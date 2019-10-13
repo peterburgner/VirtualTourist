@@ -23,7 +23,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
-    var numberImages = 0
+    var numberOfDownloadedPhotos = 0
     var page = 1
     var photosToDelete: [Int] = []
     
@@ -57,11 +57,11 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         
     func resetUI() {
         downloadedImageCounter = 0
-        numberImages = 0
+        numberOfDownloadedPhotos = 0
         photosToDelete = []
         downloadedPhotos = []
         newCollectionButton.isEnabled = false
-        deleteButton. = false
+        deleteButton.isEnabled = false
     }
     
     // MARK: -IBActions
@@ -71,7 +71,17 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         FlickrClient.searchPhotos(coordinate: annotation.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
     
-    @IBAction func deletePhoto(_ sender: Any) {
+    @IBAction func deletePhotos(_ sender: Any) {
+        
+        numberOfDownloadedPhotos = numberOfDownloadedPhotos - photosToDelete.count
+        var indexPaths = [IndexPath]()
+        for element in photosToDelete {
+            downloadedPhotos.remove(at: element)
+            let indexPath = IndexPath(row: element, section: 0)
+            indexPaths.append(indexPath)
+        }
+        
+        collectionView.deleteItems(at: indexPaths)
     }
     
     // MARK: -Completion Handlers
@@ -81,7 +91,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         if photosSearchResponse != nil {
             collectionView.reloadData()
             self.photosSearchResponse = photosSearchResponse
-            numberImages = photosSearchResponse?.photos.photo.count ?? 0
+            numberOfDownloadedPhotos = photosSearchResponse?.photos.photo.count ?? 0
             for photo in (photosSearchResponse?.photos.photo)! {
                 FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(image:))
             }
@@ -95,7 +105,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
     
     func updateUI() {
-        if downloadedImageCounter == numberImages {
+        if downloadedImageCounter == numberOfDownloadedPhotos {
             DispatchQueue.main.async {
                 self.newCollectionButton.isEnabled = true
             }
