@@ -71,15 +71,16 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
     @IBAction func deletePhotos(_ sender: Any) {
         
-        var indexPaths = [IndexPath]()
+        print("Begin deletion")
+        
         for element in photosToDelete {
             downloadedPhotos.remove(at: element)
-            let indexPath = IndexPath(row: element, section: 0)
-            indexPaths.append(indexPath)
             numberOfPhotosToDownload = numberOfPhotosToDownload - 1
         }
         
+        photosToDelete = []
         collectionView.reloadData()
+
     }
     
     // MARK: -Completion Handlers
@@ -138,11 +139,14 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         }
         else {
             collectionView.backgroundView = nil
+            print("Collection view set up for \(numberOfPhotosToDownload) photos")
             return numberOfPhotosToDownload
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        print("Update cell \(indexPath.row)")
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
         
@@ -154,10 +158,12 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         // set downloaded photos
         if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
+            print("Image set to item \(indexPath.row)")
         }
         // delete existing photos when new collection has not yet been downloaded
         if numberOfDownloadedPhotos == 0 {
             cell.imageView.image = nil
+            print("Image deleted")
         }
         
         return cell
