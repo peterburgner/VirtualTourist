@@ -18,12 +18,10 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     @IBOutlet weak var newCollectionButton: UIButton!
     @IBOutlet weak var deleteButton: UIBarButtonItem!
     
-    var downloadedImageCounter = 0
-    var downloadComplete = false
-    
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
-    var numberOfDownloadedPhotos = 0
+    var numberOfDownloadedPhotos: Int { return downloadedPhotos.count }
+    var numberOfPhotosToDownload = 0
     var page = 1
     var photosToDelete: [Int] = []
     
@@ -48,6 +46,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
     
     func prepareUI() {
+        collectionView.allowsMultipleSelection=true
         mapView.addAnnotation(annotation)
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
@@ -56,8 +55,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
         
     func resetUI() {
-        downloadedImageCounter = 0
-        numberOfDownloadedPhotos = 0
+        numberOfPhotosToDownload = 0
         photosToDelete = []
         downloadedPhotos = []
         newCollectionButton.isEnabled = false
@@ -73,15 +71,15 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
     @IBAction func deletePhotos(_ sender: Any) {
         
-        numberOfDownloadedPhotos = numberOfDownloadedPhotos - photosToDelete.count
         var indexPaths = [IndexPath]()
         for element in photosToDelete {
             downloadedPhotos.remove(at: element)
             let indexPath = IndexPath(row: element, section: 0)
             indexPaths.append(indexPath)
+            numberOfPhotosToDownload = numberOfPhotosToDownload - 1
         }
         
-        collectionView.deleteItems(at: indexPaths)
+        collectionView.reloadData()
     }
     
     // MARK: -Completion Handlers
@@ -89,9 +87,11 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         print("photos: \(photosSearchResponse)")
         print("error \(error)")
         if photosSearchResponse != nil {
-            collectionView.reloadData()
+            print("Display collection view with placeholders")
             self.photosSearchResponse = photosSearchResponse
-            numberOfDownloadedPhotos = photosSearchResponse?.photos.photo.count ?? 0
+            numberOfPhotosToDownload = photosSearchResponse?.photos.photo.count ?? 0
+            collectionView.reloadData()
+            print("Begin download of photos")
             for photo in (photosSearchResponse?.photos.photo)! {
                 FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(image:))
             }
@@ -99,42 +99,46 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     }
     
     func handleDownloadPhotoResponse(image: UIImage?) {
-        downloadedImageCounter += 1
         downloadedPhotos.append(image!)
         updateUI()
     }
     
     func updateUI() {
-        if downloadedImageCounter == numberOfDownloadedPhotos {
+        
+        // Reload collection view items
+        let indexPath = IndexPath(row: numberOfDownloadedPhotos - 1, section: 0)
+        DispatchQueue.main.async {
+            print("Reloading collection view item at \(indexPath)")
+            self.collectionView.reloadItems(at: [indexPath])
+        }
+        
+        // Enable new collection button if download complete
+        if numberOfDownloadedPhotos == numberOfPhotosToDownload {
             DispatchQueue.main.async {
                 self.newCollectionButton.isEnabled = true
             }
-            downloadComplete = true
-        }
-        let indexPath = IndexPath(item: downloadedImageCounter - 1, section: 0)
-        DispatchQueue.main.async {
-            self.collectionView.reloadItems(at: [indexPath])
+            print("Download is complete")
         }
     }
     
-    // MARK: -Collection View Delegate
+        // MARK: -Collection View Delegate
         
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let photosSearchResponse = photosSearchResponse else {
+        if photosSearchResponse == nil {
             collectionView.setBackgroundMessage("Downloading photos from Flickr")
             return 0
         }
-        if photosSearchResponse.photos.photo.count == 0 && page <= 1 {
+        if numberOfPhotosToDownload == 0 && page <= 1 {
             collectionView.setBackgroundMessage("No photos on Flickr for this location")
             return 0
         }
-        if photosSearchResponse.photos.photo.count == 0 && page > 1 {
+        if numberOfPhotosToDownload == 0 && page > 1 {
             collectionView.setBackgroundMessage("No additional photos on Flickr")
             return 0
         }
         else {
             collectionView.backgroundView = nil
-            return photosSearchResponse.photos.photo.count
+            return numberOfPhotosToDownload
         }
     }
     
@@ -147,8 +151,13 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 4
         
+        // set downloaded photos
         if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
+        }
+        // delete existing photos when new collection has not yet been downloaded
+        if numberOfDownloadedPhotos == 0 {
+            cell.imageView.image = nil
         }
         
         return cell
@@ -223,4 +232,12 @@ extension UICollectionView {
 
         self.backgroundView = messageLabel
     }
+}
+
+extension UIImageView {
+  func setImageColor(color: UIColor) {
+    let templateImage = self.image?.withRenderingMode(.alwaysTemplate)
+    self.image = templateImage
+    self.tintColor = color
+  }
 }
