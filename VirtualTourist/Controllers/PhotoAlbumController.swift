@@ -155,14 +155,12 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         cell.layer.borderColor = UIColor.black.cgColor
         cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 4
+        // avoid displaying wrong image while scrolling and delete existing photos when new collection has not yet been downloaded
+        cell.imageView.image = nil
         
         // set downloaded photos
         if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
-        }
-        // delete existing photos when new collection has not yet been downloaded
-        if numberOfDownloadedPhotos == 0 {
-            cell.imageView.image = nil
         }
         // Cell was selected for deletion
         if photosToDelete.contains(indexPath.row) {
