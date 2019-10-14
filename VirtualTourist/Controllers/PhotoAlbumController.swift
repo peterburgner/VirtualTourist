@@ -72,6 +72,8 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     @IBAction func deletePhotos(_ sender: Any) {
         
         print("Begin deletion")
+        print("Images to delete: \(photosToDelete)")
+        print("Downloaded images: \(numberOfDownloadedPhotos)")
         
         for element in photosToDelete {
             downloadedPhotos.remove(at: element)
@@ -150,6 +152,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
         
+        cell.imageView.alpha = 1
         cell.backgroundColor = .darkGray
         cell.layer.borderColor = UIColor.black.cgColor
         cell.layer.borderWidth = 1
@@ -165,14 +168,22 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
             cell.imageView.image = nil
             print("Image deleted")
         }
+        // Cell was selected for deletion
+        if photosToDelete.contains(indexPath.row) {
+            cell.imageView.alpha = 0.3
+            print("Image to be deleted")
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Photo \(indexPath.row) marked for deletion")
+        
         photosToDelete.append(indexPath.row)
         deleteButton.isEnabled = true
+        
+        collectionView.reloadItems(at: [indexPath])
     }
     
     // MARK: - MapViewDelegate
