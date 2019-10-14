@@ -148,8 +148,6 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        print("Update cell \(indexPath.row)")
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
         
         cell.imageView.alpha = 1
@@ -161,17 +159,14 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
         // set downloaded photos
         if downloadedPhotos.count > indexPath.row {
             cell.imageView.image = downloadedPhotos[indexPath.row]
-            print("Image set to item \(indexPath.row)")
         }
         // delete existing photos when new collection has not yet been downloaded
         if numberOfDownloadedPhotos == 0 {
             cell.imageView.image = nil
-            print("Image deleted")
         }
         // Cell was selected for deletion
         if photosToDelete.contains(indexPath.row) {
             cell.imageView.alpha = 0.3
-            print("Image to be deleted")
         }
         
         return cell
