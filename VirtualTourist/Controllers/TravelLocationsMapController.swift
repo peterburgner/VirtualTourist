@@ -82,6 +82,10 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         showPhotos(annotation: view.annotation as! MKPointAnnotation)
+        let selectedAnnotations = mapView.selectedAnnotations
+        for annotation in selectedAnnotations {
+            mapView.deselectAnnotation(annotation, animated: false)
+        }
     }
     
     func showPhotos(annotation: MKAnnotation) {
