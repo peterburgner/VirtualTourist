@@ -18,6 +18,7 @@ class PhotoAlbumController: UIViewController, MKMapViewDelegate, UICollectionVie
     @IBOutlet weak var newCollectionButton: UIButton!
     @IBOutlet weak var deleteButton: UIBarButtonItem!
     
+    var pin: Pin!
     var photosSearchResponse:PhotosSearchResponse!
     var downloadedPhotos = [UIImage]()
     var numberOfDownloadedPhotos: Int { return downloadedPhotos.count }

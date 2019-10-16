@@ -8,12 +8,17 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
-    var annotations = [MKPointAnnotation]()
+    var pins: [Pin] = []
+    
+    var dataController:DataController!
+    
+    var fetchedResultsController:NSFetchedResultsController<Pin>!
     
     // MARK: -View Functions
     override func viewDidLoad() {
@@ -25,10 +30,14 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     }
     
     func addAnnotation(location: CLLocationCoordinate2D){
-        let newAnnotation = MKPointAnnotation()
-        newAnnotation.coordinate = location
-        annotations.append(newAnnotation)
-        mapView.addAnnotations(annotations)
+        
+        let pin = Pin(context: dataController.viewContext)
+        pin.latitude = location.latitude
+        pin.longitude = location.longitude
+        try? dataController.viewContext.save()
+
+        pins.append(pin)
+        mapView.addAnnotations(pins)
     }
 
     func prepareUI() {
@@ -81,7 +90,7 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        showPhotos(annotation: view.annotation as! MKPointAnnotation)
+        showPhotos(annotation: view.annotation as! Pin)
         let selectedAnnotations = mapView.selectedAnnotations
         for annotation in selectedAnnotations {
             mapView.deselectAnnotation(annotation, animated: false)
@@ -90,8 +99,12 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     
     func showPhotos(annotation: MKAnnotation) {
         let vc = storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
-        vc.annotation = annotation
-        print("Annotation set to: \(vc.annotation)")
+        vc.pin = annotation as! Pin
+        print("Annotation set to: \(vc.pin)")
         navigationController!.pushViewController(vc, animated: true)
     }
+}
+
+extension TravelLocationsMapController:NSFetchedResultsControllerDelegate {
+    
 }
