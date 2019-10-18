@@ -14,7 +14,6 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
-    var pins: [Pin] = []
     
     var dataController:DataController!
     
@@ -24,20 +23,23 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        setupFetchedResultsController()
         prepareUI()
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         mapView.addGestureRecognizer(longTapGesture)
     }
     
     func addAnnotation(location: CLLocationCoordinate2D){
-        
+
         let pin = Pin(context: dataController.viewContext)
         pin.latitude = location.latitude
         pin.longitude = location.longitude
-        try? dataController.viewContext.save()
-
-        pins.append(pin)
-        mapView.addAnnotations(pins)
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+        mapView.addAnnotation(pin)
     }
 
     func prepareUI() {
@@ -49,13 +51,28 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
             mapView.setRegion(region, animated: true)
             print("Set region to \(region)")
         }
+        mapView.addAnnotations(fetchedResultsController.fetchedObjects ?? [])
     }
+    
+    // MARK: - Fetch Request
+    fileprivate func setupFetchedResultsController() {
+           let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+           fetchRequest.sortDescriptors = []
+           
+           fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+           fetchedResultsController.delegate = self
+           do {
+               try fetchedResultsController.performFetch()
+           } catch {
+               fatalError("The fetch could not be performed: \(error.localizedDescription)")
+           }
+       }
     
     // MARK: -IBActions
     @IBAction func edit(_ sender: Any) {
     }
     
-    // -MARK: -IBActions
+    // MARK: -IBActions
     @objc func longTap(sender: UIGestureRecognizer){
         if sender.state == .began {
             let locationInView = sender.location(in: mapView)
