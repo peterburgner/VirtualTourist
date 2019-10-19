@@ -84,7 +84,7 @@ class FlickrClient {
         task.resume()
     }
     
-    class func downloadPhoto(farmID: Int, serverID: String, photoID: String, photoSecret: String, completion: @escaping (UIImage?) -> Void) {
+    class func downloadPhoto(farmID: Int, serverID: String, photoID: String, photoSecret: String, completion: @escaping (Data?) -> Void) {
         let request = URLRequest(url: Endpoints.photo(farmID, serverID, photoID, photoSecret).url)
         print("Image URL: \(request)")
         let session = URLSession.shared
@@ -107,8 +107,7 @@ class FlickrClient {
                     return
                 }
                 print("Image data downloaded")
-                let image = UIImage(data: data)
-                completion(image)
+                completion(data)
                 return
             }
         }

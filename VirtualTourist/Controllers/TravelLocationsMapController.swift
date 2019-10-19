@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
+class TravelLocationsMapController: UIViewController, MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     // MARK: - Variables
     @IBOutlet weak var mapView: MKMapView!
@@ -28,19 +28,6 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         mapView.addGestureRecognizer(longTapGesture)
     }
-    
-    func addAnnotation(location: CLLocationCoordinate2D){
-
-        let pin = Pin(context: dataController.viewContext)
-        pin.latitude = location.latitude
-        pin.longitude = location.longitude
-        do {
-            try dataController.viewContext.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-        mapView.addAnnotation(pin)
-    }
 
     func prepareUI() {
         if UserDefaults.standard.dictionary(forKey: "regionData") != nil {
@@ -54,7 +41,7 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
         mapView.addAnnotations(fetchedResultsController.fetchedObjects ?? [])
     }
     
-    // MARK: - Fetch Request
+    // MARK: - Data Model Operations
     fileprivate func setupFetchedResultsController() {
            let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
            fetchRequest.sortDescriptors = []
@@ -67,6 +54,19 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
                fatalError("The fetch could not be performed: \(error.localizedDescription)")
            }
        }
+    
+    func addAnnotation(location: CLLocationCoordinate2D){
+
+        let pin = Pin(context: dataController.viewContext)
+        pin.latitude = location.latitude
+        pin.longitude = location.longitude
+        do {
+            try dataController.viewContext.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+        mapView.addAnnotation(pin)
+    }
     
     // MARK: -IBActions
     @IBAction func edit(_ sender: Any) {
@@ -117,11 +117,8 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate {
     func showPhotos(annotation: MKAnnotation) {
         let vc = storyboard!.instantiateViewController(withIdentifier: "PhotoAlbumController") as! PhotoAlbumController
         vc.pin = annotation as! Pin
+        vc.dataController = dataController
         print("Annotation set to: \(vc.pin)")
         navigationController!.pushViewController(vc, animated: true)
     }
-}
-
-extension TravelLocationsMapController:NSFetchedResultsControllerDelegate {
-    
 }
