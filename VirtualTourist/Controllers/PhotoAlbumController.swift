@@ -99,6 +99,11 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     // MARK: -IBActions
     @IBAction func createNewCollection(_ sender: Any) {
         resetUI()
+        let photosToDelete = fetchedResultsController.fetchedObjects ?? []
+        for photo in photosToDelete {
+        dataController.viewContext.delete(photo)
+        }
+        try? dataController.viewContext.save()
         page += 1
         FlickrClient.searchPhotos(coordinate: pin.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
     }
@@ -171,6 +176,7 @@ extension PhotoAlbumController: UICollectionViewDelegate {
                 return numberOfPhotosToDownload
             } else {
                 // all images already persisted
+                newCollectionButton.isEnabled = true
                 return fetchedResultsController.fetchedObjects!.count
             }
         } else {
