@@ -67,11 +67,7 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate, NSFetch
         }
         mapView.addAnnotation(pin)
     }
-    
-    // MARK: -IBActions
-    @IBAction func edit(_ sender: Any) {
-    }
-    
+       
     // MARK: -IBActions
     @objc func longTap(sender: UIGestureRecognizer){
         if sender.state == .began {

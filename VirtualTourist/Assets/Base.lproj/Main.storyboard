@@ -48,13 +48,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="GHd-OZ-JIu"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Pick Location" id="Ecn-Ra-kpa">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="9dM-lR-Naz">
-                            <connections>
-                                <action selector="edit:" destination="QLr-jE-xhL" id="Dv9-9M-7Es"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Pick Location" id="Ecn-Ra-kpa"/>
                     <connections>
                         <outlet property="mapView" destination="Zkr-8L-IVh" id="rAn-rQ-Is2"/>
                         <segue destination="DaD-Tx-XEE" kind="show" identifier="showPhotoAlbum" id="zvN-PR-YMU"/>
