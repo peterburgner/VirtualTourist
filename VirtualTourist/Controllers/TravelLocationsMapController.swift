@@ -28,7 +28,7 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate, NSFetch
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         mapView.addGestureRecognizer(longTapGesture)
     }
-
+    
     func prepareUI() {
         if UserDefaults.standard.dictionary(forKey: "regionData") != nil {
             let loadedData = UserDefaults.standard.dictionary(forKey: "regionData")
@@ -43,20 +43,20 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate, NSFetch
     
     // MARK: - Data Model Operations
     fileprivate func setupFetchedResultsController() {
-           let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
-           fetchRequest.sortDescriptors = []
-           
-           fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-           fetchedResultsController.delegate = self
-           do {
-               try fetchedResultsController.performFetch()
-           } catch {
-               fatalError("The fetch could not be performed: \(error.localizedDescription)")
-           }
-       }
+        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+        fetchRequest.sortDescriptors = []
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
     
     func addAnnotation(location: CLLocationCoordinate2D){
-
+        
         let pin = Pin(context: dataController.viewContext)
         pin.latitude = location.latitude
         pin.longitude = location.longitude
@@ -83,11 +83,11 @@ class TravelLocationsMapController: UIViewController, MKMapViewDelegate, NSFetch
     
     // MARK: - MKMapViewDelegate
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-
+        
         let reuseId = "pin"
-
+        
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-
+        
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = false
