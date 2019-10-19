@@ -28,7 +28,9 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     var numberOfPhotosToDownload = 0
     var page = 1
     var photosToDelete: [IndexPath] = []
+    var downloadingPhotos = false
     var hasFinishedDownloading = false
+    var gettingPhotosToDownload = false
     var hasFetched: Bool { return fetchedResultsController.fetchedObjects?.count ?? 0 > 0}
     
     var insertedIndexPaths = [IndexPath]()
