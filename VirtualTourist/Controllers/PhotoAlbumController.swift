@@ -45,10 +45,13 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         collectionView.dataSource = self
         prepareUI()
         resetUI()
-        setupFetchedResultsController()
-        if numberOfDownloadedPhotos == 0 {
+        if !hasFetched {
             FlickrClient.searchPhotos(coordinate: pin.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
         } else {
+            DispatchQueue.main.async {
+                self.hasFinishedDownloading = true
+                self.collectionView.reloadData()
+            }
         }
     }
     
