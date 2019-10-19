@@ -96,7 +96,7 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         resetUI()
         let deletedIndexPaths = fetchedResultsController.fetchedObjects ?? []
         for photo in deletedIndexPaths {
-        dataController.viewContext.delete(photo)
+            dataController.viewContext.delete(photo)
         }
         try? dataController.viewContext.save()
         page += 1
@@ -203,7 +203,7 @@ extension PhotoAlbumController: UICollectionViewDelegate {
             cell.imageView.alpha = 0.2
         } else {
             // not selected for deletion
-           cell.imageView.alpha = 1
+            cell.imageView.alpha = 1
         }
         
         return cell
