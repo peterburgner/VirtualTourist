@@ -82,7 +82,8 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         let fetchRequest:NSFetchRequest<DownloadedPhoto> = DownloadedPhoto.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
-        fetchRequest.sortDescriptors = []
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
@@ -150,6 +151,7 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         let photo = DownloadedPhoto(context: dataController.viewContext)
         photo.image = imageData
         photo.pin = pin
+        photo.creationDate = Date()
         try? dataController.viewContext.save()
         if numberOfDownloadedPhotos == numberOfPhotosToDownload {
             DispatchQueue.main.async {
@@ -260,7 +262,6 @@ extension PhotoAlbumController: NSFetchedResultsControllerDelegate {
             
             for indexPath in deletedIndexPaths {
                 collectionView.deleteItems(at: [indexPath])
-                collectionView.reloadData()     // visual selection needs to be cleared
             }
             
         }, completion: nil)
