@@ -23,13 +23,12 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     var fetchedResultsController:NSFetchedResultsController<DownloadedPhoto>!
     
     var pin: Pin!
+    
     var photosSearchResponse:PhotosSearchResponse!
     var numberOfDownloadedPhotos: Int { return fetchedResultsController.fetchedObjects?.count ?? 0}
     var numberOfPhotosToDownload = 0
     var page = 1
-    var downloadingPhotos = false
     var hasFinishedDownloading = false
-    var gettingPhotosToDownload = false
     var hasFetched: Bool { return fetchedResultsController.fetchedObjects?.count ?? 0 > 0}
     
     var insertedIndexPaths = [IndexPath]()
@@ -47,10 +46,8 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         resetUI()
         setupFetchedResultsController()
         if numberOfDownloadedPhotos == 0 {
-            gettingPhotosToDownload = true
             FlickrClient.searchPhotos(coordinate: pin.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
         } else {
-            gettingPhotosToDownload = false
         }
     }
     
@@ -73,8 +70,6 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         setupFetchedResultsController()
         newCollectionButton.isEnabled = false
         deleteButton.isEnabled = false
-        gettingPhotosToDownload = false
-        downloadingPhotos = false
         hasFinishedDownloading = false
     }
     
@@ -133,8 +128,6 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
             self.photosSearchResponse = photosSearchResponse
             numberOfPhotosToDownload = photosSearchResponse?.photos.photo.count ?? 0
             print("Begin download of photos")
-            gettingPhotosToDownload = false
-            downloadingPhotos = true
             if numberOfPhotosToDownload > 0 {
                 for photo in (photosSearchResponse?.photos.photo)! {
                     FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(imageData:))
@@ -158,7 +151,6 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
                 self.newCollectionButton.isEnabled = true
             }
             print("Download is complete")
-            downloadingPhotos = false
             hasFinishedDownloading = true
         }
     }
@@ -171,7 +163,7 @@ extension PhotoAlbumController: UICollectionViewDelegate {
         
         if hasFetched {
             // not all images persisted
-            if downloadingPhotos {
+            if !hasFinishedDownloading {
                 return numberOfPhotosToDownload
             } else {
                 // all images already persisted
