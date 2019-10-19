@@ -39,6 +39,7 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     
     // MARK: -View Functions
     override func viewDidLoad() {
+        super.viewDidLoad()
         mapView.delegate = self
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -52,6 +53,7 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         prepareUI()
         resetUI()
     }
