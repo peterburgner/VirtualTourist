@@ -27,7 +27,6 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     var numberOfDownloadedPhotos: Int { return fetchedResultsController.fetchedObjects?.count ?? 0}
     var numberOfPhotosToDownload = 0
     var page = 1
-    var photosToDelete: [IndexPath] = []
     var downloadingPhotos = false
     var hasFinishedDownloading = false
     var gettingPhotosToDownload = false
@@ -35,7 +34,6 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     
     var insertedIndexPaths = [IndexPath]()
     var deletedIndexPaths = [IndexPath]()
-    var updatedIndexPaths = [IndexPath]()
     
     let sectionInsets = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
     let photosPerRow: CGFloat = 3
@@ -72,7 +70,6 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     
     func resetUI() {
         numberOfPhotosToDownload = 0
-        photosToDelete = []
         setupFetchedResultsController()
         newCollectionButton.isEnabled = false
         deleteButton.isEnabled = false
@@ -99,8 +96,8 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     // MARK: -IBActions
     @IBAction func createNewCollection(_ sender: Any) {
         resetUI()
-        let photosToDelete = fetchedResultsController.fetchedObjects ?? []
-        for photo in photosToDelete {
+        let deletedIndexPaths = fetchedResultsController.fetchedObjects ?? []
+        for photo in deletedIndexPaths {
         dataController.viewContext.delete(photo)
         }
         try? dataController.viewContext.save()
@@ -111,18 +108,18 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     @IBAction func deletePhotos(_ sender: Any) {
         
         print("Begin deletion")
-        print("Images to delete: \(photosToDelete)")
+        print("Images to delete: \(deletedIndexPaths.count)")
         print("Downloaded images: \(numberOfDownloadedPhotos)")
         
-        for indexPath in photosToDelete {
+        for indexPath in deletedIndexPaths {
+            print("deleting item \(indexPath)")
             let noteToDelete = fetchedResultsController.object(at: indexPath)
             dataController.viewContext.delete(noteToDelete)
-            try? dataController.viewContext.save()
             numberOfPhotosToDownload = numberOfPhotosToDownload - 1
         }
+        try? dataController.viewContext.save()
         
-        photosToDelete = []
-        collectionView.reloadData()
+        deletedIndexPaths = []
         
     }
     
@@ -206,8 +203,11 @@ extension PhotoAlbumController: UICollectionViewDelegate {
             cell.imageView.image = UIImage(data: fetchedResultsController.object(at: indexPath).image!)
         }
         // Cell was selected for deletion
-        if photosToDelete.contains(indexPath) {
-            cell.imageView.alpha = 0.3
+        if deletedIndexPaths.contains(indexPath) {
+            cell.imageView.alpha = 0.2
+        } else {
+            // not selected for deletion
+           cell.imageView.alpha = 1
         }
         
         return cell
@@ -216,7 +216,7 @@ extension PhotoAlbumController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Photo \(indexPath.row) marked for deletion")
         
-        photosToDelete.append(indexPath)
+        deletedIndexPaths.append(indexPath)
         deleteButton.isEnabled = true
         
         collectionView.reloadItems(at: [indexPath])
@@ -228,7 +228,6 @@ extension PhotoAlbumController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedIndexPaths = [IndexPath]()
         deletedIndexPaths = [IndexPath]()
-        updatedIndexPaths = [IndexPath]()
     }
     
     func controller(
@@ -245,9 +244,6 @@ extension PhotoAlbumController: NSFetchedResultsControllerDelegate {
         case .delete:
             deletedIndexPaths.append(indexPath!)
             break
-        case .update:
-            updatedIndexPaths.append(indexPath!)
-            break
         default:
             print("\(type) operation: Should not have occured!")
             break
@@ -258,16 +254,13 @@ extension PhotoAlbumController: NSFetchedResultsControllerDelegate {
         
         collectionView.performBatchUpdates({() -> Void in
             
-            for indexPath in self.insertedIndexPaths {
-                self.collectionView.insertItems(at: [indexPath])
+            for indexPath in insertedIndexPaths {
+                collectionView.insertItems(at: [indexPath])
             }
             
-            for indexPath in self.deletedIndexPaths {
-                self.collectionView.deleteItems(at: [indexPath])
-            }
-            
-            for indexPath in self.updatedIndexPaths {
-                self.collectionView.reloadItems(at: [indexPath])
+            for indexPath in deletedIndexPaths {
+                collectionView.deleteItems(at: [indexPath])
+                collectionView.reloadData()     // visual selection needs to be cleared
             }
             
         }, completion: nil)
