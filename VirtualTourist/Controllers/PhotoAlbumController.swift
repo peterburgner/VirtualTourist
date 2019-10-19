@@ -28,6 +28,8 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
     var numberOfPhotosToDownload = 0
     var page = 1
     var photosToDelete: [IndexPath] = []
+    var hasFinishedDownloading = false
+    var hasFetched: Bool { return fetchedResultsController.fetchedObjects?.count ?? 0 > 0}
     
     var insertedIndexPaths = [IndexPath]()
     var deletedIndexPaths = [IndexPath]()
@@ -45,7 +47,10 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         resetUI()
         setupFetchedResultsController()
         if numberOfDownloadedPhotos == 0 {
+            gettingPhotosToDownload = true
             FlickrClient.searchPhotos(coordinate: pin.coordinate, page: page, completion: handlePhotosSearchResponse(photosSearchResponse:error:))
+        } else {
+            gettingPhotosToDownload = false
         }
     }
     
@@ -69,6 +74,9 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
         setupFetchedResultsController()
         newCollectionButton.isEnabled = false
         deleteButton.isEnabled = false
+        gettingPhotosToDownload = false
+        downloadingPhotos = false
+        hasFinishedDownloading = false
     }
     
     fileprivate func setupFetchedResultsController() {
@@ -119,10 +127,16 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
             print("Display collection view with placeholders")
             self.photosSearchResponse = photosSearchResponse
             numberOfPhotosToDownload = photosSearchResponse?.photos.photo.count ?? 0
-            collectionView.reloadData()
             print("Begin download of photos")
-            for photo in (photosSearchResponse?.photos.photo)! {
-                FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(imageData:))
+            gettingPhotosToDownload = false
+            downloadingPhotos = true
+            if numberOfPhotosToDownload > 0 {
+                for photo in (photosSearchResponse?.photos.photo)! {
+                    FlickrClient.downloadPhoto(farmID: photo.farm, serverID: photo.server, photoID: photo.id, photoSecret: photo.secret, completion: handleDownloadPhotoResponse(imageData:))
+                }
+            } else {
+                hasFinishedDownloading = true
+                collectionView.reloadData()
             }
         }
     }
@@ -138,6 +152,8 @@ class PhotoAlbumController: UIViewController, UICollectionViewDataSource {
                 self.newCollectionButton.isEnabled = true
             }
             print("Download is complete")
+            downloadingPhotos = false
+            hasFinishedDownloading = true
         }
     }
 }
@@ -147,32 +163,21 @@ extension PhotoAlbumController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if fetchedResultsController.fetchedObjects!.count > 0 {
-            return fetchedResultsController.fetchedObjects!.count
-        }
-        
-        // Set status to downloading before executing photos search
-        if photosSearchResponse == nil {
-            collectionView.setBackgroundMessage("Downloading photos from Flickr")
+        if hasFetched {
+            // not all images persisted
+            if downloadingPhotos {
+                return numberOfPhotosToDownload
+            } else {
+                // all images already persisted
+                return fetchedResultsController.fetchedObjects!.count
+            }
+        } else {
+            // nothing fetched yet
+            
+            if hasFinishedDownloading {
+                collectionView.setBackgroundMessage("No photos available")
+            }
             return 0
-        }
-        
-        // No photos for this location found
-        if photosSearchResponse != nil && numberOfPhotosToDownload == 0 && page <= 1 {
-            collectionView.setBackgroundMessage("No photos on Flickr for this location")
-            return 0
-        }
-        
-        // No additional photos for this location found
-        if photosSearchResponse != nil && numberOfPhotosToDownload == 0 && page > 1 {
-            collectionView.setBackgroundMessage("No additional photos on Flickr")
-            return 0
-        }
-            // Download photos for this collection
-        else {
-            collectionView.backgroundView = nil
-            print("Collection view set up for \(numberOfPhotosToDownload) photos")
-            return numberOfPhotosToDownload
         }
     }
     
